@@ -31,7 +31,7 @@ ai_string::tests::string_length: test
 
 ## !!Attention!!
 ### WIP
-This is an extremely early test to learn rust. Don't expect mush.
+This is an extremely early test to learn rust. Don't expect much.
 
 ### Tests
 You need to run the tests individually.
