@@ -6,7 +6,7 @@
 use std::ptr;
 use std::str;
 use std::fmt;
-use std::ffi::{CStr};
+use std::ffi::CStr;
 
 pub use ai_bindings::AtString;
 use ai_bindings::AiAtStringLength;
