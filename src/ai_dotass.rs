@@ -7,6 +7,7 @@ use ai_bindings;
 use ai_bindings::AtMetadataStore;
 
 use std::ffi::CString;
+
 fn AiASSWrite(filename: &str, mask: i32, open_procs: bool, binary: bool) -> i32{
     let filename = CString::new(filename).unwrap();
     unsafe {
