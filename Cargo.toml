@@ -2,8 +2,16 @@
 name = "arnold-rs"
 version = "0.1.0"
 authors = ["fredrik.brannbacka <fredrik.brannbacka@gmail.com>"]
-build = "build.rs"
+#build = "build.rs"
 
 [build-dependencies]
 bindgen = "*"
 regex = "1"
+
+[lib]
+name = "arnold_rs"
+path = "src/lib.rs"
+
+[[bin]]
+name = "kick"
+path = "src/bin/kick.rs"
