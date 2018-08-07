@@ -1,3 +1,6 @@
+//! AtArray API
+//!
+//! The AtArray object encapsulates an array of any of the Arnold built-in data types. like AI_TYPE_BYTE, AI_TYPE_FLOAT, AI_TYPE_STRING, etc. Its API has easy-to-use accessor functions for reading and writing elements, and there are a number of functions for manipulating arrays (such as copying them). An AtArray is specified by the element data type, the number of motion keys in the array, and the number of elements per motion key. The data is grouped together by motion keys.
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]

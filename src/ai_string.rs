@@ -1,52 +1,51 @@
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
+use std::ffi::CStr;
+use std::fmt;
 #[allow(dead_code)]
-
 use std::ptr;
 use std::str;
-use std::fmt;
-use std::ffi::CStr;
 
-pub use ai_bindings::AtString;
-use ai_bindings::AiAtStringLength;
 use ai_bindings::AiAtStringHash;
+use ai_bindings::AiAtStringLength;
 use ai_bindings::AiCreateAtStringData_private;
+pub use ai_bindings::AtString;
 
 impl AtString {
-    #[allow(dead_code)]
-    fn length(&self) -> usize{
-        unsafe{AiAtStringLength(self.data)}
+    pub fn length(&self) -> usize {
+        unsafe { AiAtStringLength(self.data) }
     }
 
-    #[allow(dead_code)]
-    fn empty(&self) -> bool{
+    pub fn empty(&self) -> bool {
         self.length() == 0
     }
 
-    #[allow(dead_code)]
-    fn hash(&self) -> usize{
-        unsafe{AiAtStringHash(self.data)}
+    pub fn hash(&self) -> usize {
+        unsafe { AiAtStringHash(self.data) }
     }
 }
 
-
-impl <'a> From<&'a str> for AtString {
+impl<'a> From<&'a str> for AtString {
     fn from(s: &'a str) -> Self {
-        if s.len() == 0{
-            AtString{data: ptr::null()}
-        }else{
-            AtString{data: unsafe{AiCreateAtStringData_private(s.to_owned().as_ptr() as *const i8)}}
+        if s.len() == 0 {
+            AtString { data: ptr::null() }
+        } else {
+            AtString {
+                data: unsafe { AiCreateAtStringData_private(s.to_owned().as_ptr() as *const i8) },
+            }
         }
     }
 }
 
 impl From<String> for AtString {
     fn from(s: String) -> Self {
-        if s.len() == 0{
-            AtString{data: ptr::null()}
-        }else{
-            AtString{data: unsafe{AiCreateAtStringData_private(s.as_ptr() as *const i8)}}
+        if s.len() == 0 {
+            AtString { data: ptr::null() }
+        } else {
+            AtString {
+                data: unsafe { AiCreateAtStringData_private(s.as_ptr() as *const i8) },
+            }
         }
     }
 }
@@ -66,14 +65,13 @@ impl PartialEq for AtString {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
-    use ai_render::{AiBegin, AiEnd, AI_SESSION_BATCH};
     use ai_msg::{AiMsgSetConsoleFlags, AI_LOG_NONE};
+    use ai_render::{AiBegin, AiEnd, AI_SESSION_BATCH};
     #[test]
-    fn string_length(){
+    fn string_length() {
         AiBegin(AI_SESSION_BATCH);
         AiMsgSetConsoleFlags(AI_LOG_NONE);
         let rust_str = "TEST";
@@ -85,7 +83,7 @@ mod tests {
         AiEnd();
     }
     #[test]
-    fn string_cmp(){
+    fn string_cmp() {
         AiBegin(AI_SESSION_BATCH);
         AiMsgSetConsoleFlags(AI_LOG_NONE);
         let rust_str = "TEST";
@@ -97,7 +95,7 @@ mod tests {
         AiEnd();
     }
     #[test]
-    fn string_empty(){
+    fn string_empty() {
         AiBegin(AI_SESSION_BATCH);
         AiMsgSetConsoleFlags(AI_LOG_NONE);
         let rust_str = "";
@@ -110,7 +108,7 @@ mod tests {
         AiEnd();
     }
     #[test]
-    fn string_hash(){
+    fn string_hash() {
         AiBegin(AI_SESSION_BATCH);
         AiMsgSetConsoleFlags(AI_LOG_NONE);
         assert_eq!(AtString::from("åäö").hash(), 6401777111767391186);

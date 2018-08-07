@@ -30,12 +30,13 @@ fn main() {
     }
 
     let node_bindings = bindgen::Builder::default()    
-        .header(arnold_include_path.join("ai.h").to_str().expect("Unable to create header path"))
+        .header("wrapper.hpp")
         .clang_args(&["-x", "c++"])
         .clang_arg("-std=c++14")
         .clang_arg(format!("-I{}", arnold_include_path.to_string_lossy()))
         .parse_callbacks(Box::new(ArnoldConstType))
         .hide_type("max_align_t")
+        //.generate_inline_functions(true) 
         // ai_allocate
         .whitelisted_function("AiMalloc")
         .whitelisted_function("AiRealloc")
