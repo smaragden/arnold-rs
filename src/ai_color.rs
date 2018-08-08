@@ -21,13 +21,21 @@ pub fn clamp(val: f32, min: f32, max: f32) -> f32 {
 }
 
 pub trait Color {
+    /// Clamp the RGB\[A\] color vector to the specified range.
     fn clamp(&self, lo: f32, hi: f32) -> Self;
+    /// Clip negative values.
     fn clip_to_zero(&self) -> Self;
+    /// Check for almost black.
     fn is_small(&self, epsilon: f32) -> bool;
+    /// Absolute value of color.
     fn abs(&self) -> Self;
+    /// Max RGB component of color.
     fn max(&self) -> f32;
+    /// Check to see if this color differ by more than a threhsold against another color.
     fn threshold(&self, c2: &Self, t: f32) -> bool;
+    /// Convert a RGB color to grey scale (take average of R, G, B)
     fn to_gray(&self) -> f32;
+    /// Check to see if an RGB color has any corrupted components (nan or infinite).
     fn is_finite(&self) -> bool;
     //fn berp(&self, a: f32, b: f32, c1: Self, c2: Self) -> Self;
     //fn heat_map(&self, ...)
@@ -181,7 +189,7 @@ pub fn AiColorToGrey<T: Color>(c: &T) -> f32 {
     c.to_gray()
 }
 
-/// Check to see if an RGB color has any corrupted components (nan or infinite). More...
+/// Check to see if an RGB color has any corrupted components (nan or infinite).
 pub fn AiRGBIsFinite<T: Color>(c1: &T) -> bool {
     c1.is_finite()
 }
