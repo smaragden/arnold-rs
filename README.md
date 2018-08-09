@@ -1,5 +1,65 @@
 # Rust bindings for the Arnold rendering API
 
+## Modules
+- [ ] ai_allocate
+- [ ] ai_api
+- [x] ai_array
+- [ ] ai_bbox
+- [ ] ai_cameras
+- [ ] ai_closure
+- [x] ai_color
+- [ ] ai_color_managers
+- [ ] ai_comparison
+- [x] ai_constants
+- [ ] ai_critsec
+- [ ] ai_deprecated
+- [ ] ai_device
+- [x] ai_dotass
+- [ ] ai_driver_utils
+- [ ] ai_drivers
+- [ ] ai_enum
+- [ ] ai_filters
+- [ ] ai_license
+- [ ] ai_math
+- [ ] ai_matrix
+- [ ] ai_matrix_private
+- [ ] ai_metadata
+- [ ] ai_msg
+- [ ] ai_node_entry
+- [x] ai_nodes
+- [ ] ai_noise
+- [ ] ai_operator
+- [ ] ai_params
+- [ ] ai_plugins
+- [ ] ai_pointcloud
+- [ ] ai_procedural
+- [ ] ai_ray
+- [ ] ai_render
+- [ ] ai_sampler
+- [ ] ai_shader_aovs
+- [ ] ai_shader_bsdf
+- [ ] ai_shader_closure
+- [ ] ai_shader_lights
+- [ ] ai_shader_message
+- [ ] ai_shader_parameval
+- [ ] ai_shader_radiance
+- [ ] ai_shader_sample
+- [ ] ai_shader_sss
+- [ ] ai_shader_userdef
+- [ ] ai_shader_util
+- [ ] ai_shader_volume
+- [ ] ai_shaderglobals
+- [ ] ai_shaders
+- [ ] ai_stats
+- [x] ai_string
+- [ ] ai_texture
+- [ ] ai_threads
+- [ ] ai_unit_test
+- [ ] ai_universe
+- [ ] ai_vector
+- [ ] ai_version
+- [ ] ai_volume
+
 ## Build
 ### Environment Setup
 Before you build and run you need to make sure arnold can be found.
