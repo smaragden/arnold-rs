@@ -15,7 +15,7 @@
 |<ul><li>[x] ai_constants</li></ul>      |<ul><li>[ ] ai_version</li></ul>        |<ul><li>[ ] ai_shader_userdef</li></ul>   |
 |<ul><li>[ ] ai_critsec</li></ul>        |<ul><li>[ ] ai_volume</li></ul>         |<ul><li>[ ] ai_shader_util</li></ul>      |
 |<ul><li>[ ] ai_deprecated</li></ul>     |<ul><li>[ ] ai_operator</li></ul>       |<ul><li>[ ] ai_shader_volume</li></ul>    |
-|<ul><li>[ ] ai_device</li></ul>         |<ul><li>[ ] ai_params</li></ul>         |<ul><li>[ ] ai_shaderglobals</li></ul>    |
+|<ul><li>[ ] ai_device</li></ul>         |<ul><li>[ ] ai_params</li></ul>         |<ul><li>[ ] ~~ai_shaderglobals~~</li></ul>|
 |<ul><li>[x] ai_dotass</li></ul>         |<ul><li>[ ] ai_plugins</li></ul>        |<ul><li>[ ] ai_shaders</li></ul>          |
 |<ul><li>[ ] ai_driver_utils</li></ul>   |<ul><li>[ ] ai_pointcloud</li></ul>     |<ul><li>[ ] ai_stats</li></ul>            |
 |<ul><li>[ ] ai_drivers</li></ul>        |<ul><li>[ ] ai_procedural</li></ul>     |<ul><li>[x] ai_string</li></ul>           |
