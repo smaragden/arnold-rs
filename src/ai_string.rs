@@ -1,16 +1,17 @@
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
-use std::ffi::CStr;
-use std::fmt;
-#[allow(dead_code)]
-use std::ptr;
-use std::str;
 
 use ai_bindings::AiAtStringHash;
 use ai_bindings::AiAtStringLength;
 use ai_bindings::AiCreateAtStringData_private;
 pub use ai_bindings::AtString;
+
+use std::ffi::CStr;
+use std::fmt;
+#[allow(dead_code)]
+use std::ptr;
+use std::str;
 
 impl AtString {
     pub fn new() -> Self {

@@ -5,8 +5,8 @@
 #![allow(non_snake_case)]
 
 //use ai_bindings;
-use ai_bindings::AtRGB;
-use ai_bindings::AtRGBA;
+pub use ai_bindings::AtRGB;
+pub use ai_bindings::AtRGBA;
 use std::f32::{INFINITY, NAN};
 
 #[doc(hidden)]
