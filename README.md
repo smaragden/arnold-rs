@@ -27,8 +27,9 @@ ai_string::tests::string_empty: test
 ai_string::tests::string_hash: test
 ai_string::tests::string_length: test
 ```
-
-
+# Documentation
+To build documentation, run:
+```cargo rustdoc --lib -- --sort-modules-by-appearance -Z unstable-options```
 ## !!Attention!!
 ### WIP
 This is an extremely early test to learn rust. Don't expect much.

@@ -13,6 +13,12 @@ use ai_bindings::AiCreateAtStringData_private;
 pub use ai_bindings::AtString;
 
 impl AtString {
+    pub fn new() -> Self {
+        AtString {
+            data: unsafe { AiCreateAtStringData_private(ptr::null() as *const i8) },
+        }
+    }
+
     pub fn length(&self) -> usize {
         unsafe { AiAtStringLength(self.data) }
     }

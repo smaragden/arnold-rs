@@ -22,8 +22,7 @@ use ai_string::AtString;
 
 use std::ffi::{CStr, CString};
 use std::os::raw::c_void;
-use std::ptr;
-use std::str;
+use std::{ptr, str};
 
 /// Create a fresh instantiation of a node.
 ///
@@ -44,15 +43,16 @@ use std::str;
 /// ```
 /// AiNode("flat", "flatShader1", None)
 /// ```
-pub fn AiNode(
-    nentry_name: &str,
+pub fn AiNode<T: Into<AtString>>(
+    nentry_name: T,
     name: Option<&str>,
     parent: Option<*const ai_bindings::AtNode>,
 ) -> *mut ai_bindings::AtNode {
     unsafe {
+        let name = name.unwrap_or("");
         return ai_bindings::AiNode(
-            AtString::from(nentry_name),
-            AtString::from(name.unwrap_or("")),
+            nentry_name.into(),
+            name.into(),
             parent.unwrap_or(ptr::null_mut()),
         );
     }
@@ -80,13 +80,11 @@ pub fn AiNode(
 /// ```
 /// AiNodeLookUpByName("flatShader1", None)
 /// ```
-pub fn AiNodeLookUpByName(
-    name: &str,
+pub fn AiNodeLookUpByName<T: Into<AtString>>(
+    name: T,
     parent: Option<*const ai_bindings::AtNode>,
 ) -> *mut ai_bindings::AtNode {
-    unsafe {
-        ai_bindings::AiNodeLookUpByName(AtString::from(name), parent.unwrap_or(ptr::null_mut()))
-    }
+    unsafe { ai_bindings::AiNodeLookUpByName(name.into(), parent.unwrap_or(ptr::null_mut())) }
 }
 
 /// Declare a user-defined parameter for this node.
@@ -116,9 +114,13 @@ pub fn AiNodeLookUpByName(
 /// true if the parameter could be succesfully added: it didn't already exist and the declaration string wasn't malformed
 /// # See also
 /// User-Data API
-pub fn AiNodeDeclare(node: *mut ai_bindings::AtNode, param: &str, declaration: &str) -> bool {
+pub fn AiNodeDeclare<T: Into<AtString>>(
+    node: *mut ai_bindings::AtNode,
+    param: T,
+    declaration: &str,
+) -> bool {
     let declaration = CString::new(declaration).unwrap();
-    unsafe { ai_bindings::AiNodeDeclare(node, AtString::from(param), declaration.as_ptr()) }
+    unsafe { ai_bindings::AiNodeDeclare(node, param.into(), declaration.as_ptr()) }
 }
 
 /// Return the user-defined parameter entry that matches a given name.
@@ -132,11 +134,11 @@ pub fn AiNodeDeclare(node: *mut ai_bindings::AtNode, param: &str, declaration: &
 /// handle to the user-defined parameter entry whose name matches the given string, or NULL if not found
 /// # See also
 /// User-Data API
-pub fn AiNodeLookUpUserParameter(
+pub fn AiNodeLookUpUserParameter<T: Into<AtString>>(
     node: *mut ai_bindings::AtNode,
-    param: &str,
+    param: T,
 ) -> *const ai_bindings::AtUserParamEntry {
-    unsafe { ai_bindings::AiNodeLookUpUserParameter(node, AtString::from(param)) }
+    unsafe { ai_bindings::AiNodeLookUpUserParameter(node, param.into()) }
 }
 
 /// Compare the node type against a string.
@@ -153,8 +155,8 @@ pub fn AiNodeLookUpUserParameter(
 /// * `string` - the name of an existing node type
 /// # Returns
 /// true if the node type's name matches the given string
-pub fn AiNodeIs(node: *mut ai_bindings::AtNode, name: &str) -> bool {
-    unsafe { ai_bindings::AiNodeIs(node, AtString::from(name)) }
+pub fn AiNodeIs<T: Into<AtString>>(node: *mut ai_bindings::AtNode, name: T) -> bool {
+    unsafe { ai_bindings::AiNodeIs(node, name.into()) }
 }
 
 /// Reset all node parameters to their default values and remove any input links.
