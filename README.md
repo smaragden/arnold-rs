@@ -1,64 +1,66 @@
 # Rust bindings for the Arnold rendering API
 
 ## Modules
-- [ ] ai_allocate
-- [ ] ai_api
-- [x] ai_array
-- [ ] ai_bbox
-- [ ] ai_cameras
-- [ ] ai_closure
-- [x] ai_color
-- [ ] ai_color_managers
-- [ ] ai_comparison
-- [x] ai_constants
-- [ ] ai_critsec
-- [ ] ai_deprecated
-- [ ] ai_device
-- [x] ai_dotass
-- [ ] ai_driver_utils
-- [ ] ai_drivers
-- [ ] ai_enum
-- [ ] ai_filters
-- [ ] ai_license
-- [ ] ai_math
-- [ ] ai_matrix
-- [ ] ai_matrix_private
-- [ ] ai_metadata
-- [ ] ai_msg
-- [ ] ai_node_entry
-- [x] ai_nodes
-- [ ] ai_noise
-- [ ] ai_operator
-- [ ] ai_params
-- [ ] ai_plugins
-- [ ] ai_pointcloud
-- [ ] ai_procedural
-- [ ] ai_ray
-- [ ] ai_render
-- [ ] ai_sampler
-- [ ] ai_shader_aovs
-- [ ] ai_shader_bsdf
-- [ ] ai_shader_closure
-- [ ] ai_shader_lights
-- [ ] ai_shader_message
-- [ ] ai_shader_parameval
-- [ ] ai_shader_radiance
-- [ ] ai_shader_sample
-- [ ] ai_shader_sss
-- [ ] ai_shader_userdef
-- [ ] ai_shader_util
-- [ ] ai_shader_volume
-- [ ] ai_shaderglobals
-- [ ] ai_shaders
-- [ ] ai_stats
-- [x] ai_string
-- [ ] ai_texture
-- [ ] ai_threads
-- [ ] ai_unit_test
-- [ ] ai_universe
-- [ ] ai_vector
-- [ ] ai_version
-- [ ] ai_volume
+|             |                |
+|-------------|----------------|
+|- [ ] ai_allocate          |- [ ] ai_operator          |
+|- [ ] ai_api               |- [ ] ai_params            |
+|- [x] ai_array             |- [ ] ai_plugins           |
+|- [ ] ai_bbox              |- [ ] ai_pointcloud        |
+|- [ ] ai_cameras           |- [ ] ai_procedural        |
+|- [ ] ai_closure           |- [ ] ai_ray               |
+|- [x] ai_color             |- [ ] ai_render            |
+|- [ ] ai_color_managers    |- [ ] ai_sampler           |
+|- [ ] ai_comparison        |- [ ] ai_shader_aovs       |
+|- [x] ai_constants         |- [ ] ai_shader_bsdf       |
+|- [ ] ai_critsec           |- [ ] ai_shader_closure    |
+|- [ ] ai_deprecated        |- [ ] ai_shader_lights     |
+|- [ ] ai_device            |- [ ] ai_shader_message    |
+|- [x] ai_dotass            |- [ ] ai_shader_parameval  |
+|- [ ] ai_driver_utils      |- [ ] ai_shader_radiance   |
+|- [ ] ai_drivers           |- [ ] ai_shader_sample     |
+|- [ ] ai_enum              |- [ ] ai_shader_sss        |
+|- [ ] ai_filters           |- [ ] ai_shader_userdef    |
+|- [ ] ai_license           |- [ ] ai_shader_util       |
+|- [ ] ai_math              |- [ ] ai_shader_volume     |
+|- [ ] ai_matrix            |- [ ] ai_shaderglobals     |
+|- [ ] ai_matrix_private    |- [ ] ai_shaders           |
+|- [ ] ai_metadata          |- [ ] ai_stats             |
+|- [ ] ai_msg               |- [x] ai_string            |
+|- [ ] ai_node_entry        |- [ ] ai_texture           |
+|- [x] ai_nodes             |- [ ] ai_threads           |
+|- [ ] ai_noise             |- [ ] ai_unit_test         |
+|- [ ] ai_universe          |                           |
+|- [ ] ai_vector            |                           |
+|- [ ] ai_version           |                           |
+|- [ ] ai_volume            |                           |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Build
 ### Environment Setup
