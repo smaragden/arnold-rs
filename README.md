@@ -1,66 +1,28 @@
 # Rust bindings for the Arnold rendering API
 
 ## Modules
-|                            |                            |
-|----------------------------|----------------------------|
-| <ul><li>[ ] ai_allocate</li></ul>          | - [ ] ai_operator          |
-| <ul><li>[ ] ai_api</li></ul>               | - [ ] ai_params            |
-| <ul><li>[x] ai_array</li></ul>             | - [ ] ai_plugins           |
-| <ul><li>[ ] ai_bbox</li></ul>              | - [ ] ai_pointcloud        |
-| <ul><li>[ ] ai_cameras</li></ul>           | - [ ] ai_procedural        |
-| <ul><li>[ ] ai_closure</li></ul>           | - [ ] ai_ray               |
-| <ul><li>[x] ai_color</li></ul>             | - [ ] ai_render            |
-| <ul><li>[ ] ai_color_managers</li></ul>    | - [ ] ai_sampler           |
-| <ul><li>[ ] ai_comparison</li></ul>        | - [ ] ai_shader_aovs       |
-| <ul><li>[x] ai_constants</li></ul>         | - [ ] ai_shader_bsdf       |
-| <ul><li>[ ] ai_critsec</li></ul>           | - [ ] ai_shader_closure    |
-| <ul><li>[ ] ai_deprecated</li></ul>        | - [ ] ai_shader_lights     |
-| <ul><li>[ ] ai_device</li></ul>            | - [ ] ai_shader_message    |
-| <ul><li>[x] ai_dotass</li></ul>            | - [ ] ai_shader_parameval  |
-| <ul><li>[ ] ai_driver_utils</li></ul>      | - [ ] ai_shader_radiance   |
-| <ul><li>[ ] ai_drivers</li></ul>           | - [ ] ai_shader_sample     |
-| <ul><li>[ ] ai_enum</li></ul>              | - [ ] ai_shader_sss        |
-| <ul><li>[ ] ai_filters</li></ul>           | - [ ] ai_shader_userdef    |
-| <ul><li>[ ] ai_license</li></ul>           | - [ ] ai_shader_util       |
-| <ul><li>[ ] ai_math</li></ul>              | - [ ] ai_shader_volume     |
-| <ul><li>[ ] ai_matrix</li></ul>            | - [ ] ai_shaderglobals     |
-| <ul><li>[ ] ai_matrix_private</li></ul>    | - [ ] ai_shaders           |
-| <ul><li>[ ] ai_metadata</li></ul>          | - [ ] ai_stats             |
-| <ul><li>[ ] ai_msg</li></ul>               | - [x] ai_string            |
-| <ul><li>[ ] ai_node_entry</li></ul>        | - [ ] ai_texture           |
-| <ul><li>[x] ai_nodes</li></ul>             | - [ ] ai_threads           |
-| <ul><li>[ ] ai_noise</li></ul>             | - [ ] ai_unit_test         |
-| <ul><li>[ ] ai_universe</li></ul>          |                            |
-| <ul><li>[ ] ai_vector</li></ul>            |                            |
-| <ul><li>[ ] ai_version</li></ul>           |                            |
-| <ul><li>[ ] ai_volume</li></ul>            |                            |
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+|                                        |                                        |                                          |
+|----------------------------------------|----------------------------------------|------------------------------------------|
+|<ul><li>[ ] ai_allocate</li></ul>       |<ul><li>[ ] ai_matrix</li></ul>         |<ul><li>[ ] ai_shader_aovs</li></ul>      |
+|<ul><li>[ ] ai_api</li></ul>            |<ul><li>[ ] ai_matrix_private</li></ul> |<ul><li>[ ] ai_shader_bsdf</li></ul>      |
+|<ul><li>[x] ai_array</li></ul>          |<ul><li>[ ] ai_metadata</li></ul>       |<ul><li>[ ] ai_shader_closure</li></ul>   |
+|<ul><li>[ ] ai_bbox</li></ul>           |<ul><li>[ ] ai_msg</li></ul>            |<ul><li>[ ] ai_shader_lights</li></ul>    |
+|<ul><li>[ ] ai_cameras</li></ul>        |<ul><li>[ ] ai_node_entry</li></ul>     |<ul><li>[ ] ai_shader_message</li></ul>   |
+|<ul><li>[ ] ai_closure</li></ul>        |<ul><li>[x] ai_nodes</li></ul>          |<ul><li>[ ] ai_shader_parameval</li></ul> |
+|<ul><li>[x] ai_color</li></ul>          |<ul><li>[ ] ai_noise</li></ul>          |<ul><li>[ ] ai_shader_radiance</li></ul>  |
+|<ul><li>[ ] ai_color_managers</li></ul> |<ul><li>[ ] ai_universe</li></ul>       |<ul><li>[ ] ai_shader_sample</li></ul>    |
+|<ul><li>[ ] ai_comparison</li></ul>     |<ul><li>[ ] ai_vector</li></ul>         |<ul><li>[ ] ai_shader_sss</li></ul>       |
+|<ul><li>[x] ai_constants</li></ul>      |<ul><li>[ ] ai_version</li></ul>        |<ul><li>[ ] ai_shader_userdef</li></ul>   |
+|<ul><li>[ ] ai_critsec</li></ul>        |<ul><li>[ ] ai_volume</li></ul>         |<ul><li>[ ] ai_shader_util</li></ul>      |
+|<ul><li>[ ] ai_deprecated</li></ul>     |<ul><li>[ ] ai_operator</li></ul>       |<ul><li>[ ] ai_shader_volume</li></ul>    |
+|<ul><li>[ ] ai_device</li></ul>         |<ul><li>[ ] ai_params</li></ul>         |<ul><li>[ ] ai_shaderglobals</li></ul>    |
+|<ul><li>[x] ai_dotass</li></ul>         |<ul><li>[ ] ai_plugins</li></ul>        |<ul><li>[ ] ai_shaders</li></ul>          |
+|<ul><li>[ ] ai_driver_utils</li></ul>   |<ul><li>[ ] ai_pointcloud</li></ul>     |<ul><li>[ ] ai_stats</li></ul>            |
+|<ul><li>[ ] ai_drivers</li></ul>        |<ul><li>[ ] ai_procedural</li></ul>     |<ul><li>[x] ai_string</li></ul>           |
+|<ul><li>[ ] ai_enum</li></ul>           |<ul><li>[ ] ai_ray</li></ul>            |<ul><li>[ ] ai_texture</li></ul>          |
+|<ul><li>[ ] ai_filters</li></ul>        |<ul><li>[ ] ai_render</li></ul>         |<ul><li>[ ] ai_unit_test</li></ul>        |
+|<ul><li>[ ] ai_license</li></ul>        |<ul><li>[ ] ai_threads</li></ul>        |                                          |
+|<ul><li>[ ] ai_math</li></ul>           |<ul><li>[ ] ai_sampler</li></ul>        |                                          |
 
 ## Build
 ### Environment Setup
