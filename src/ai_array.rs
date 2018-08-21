@@ -6,7 +6,8 @@
 #![allow(non_snake_case)]
 
 use ai_bindings;
-use ai_bindings::{AtArray, AtMatrix, AtRGB, AtRGBA, AtVector, AtVector2};
+use ai_bindings::{AtArray, AtMatrix, AtRGB, AtRGBA};
+use ai_vector::{AtVector, AtVector2};
 use ai_string::AtString;
 
 use std::ffi::CString;

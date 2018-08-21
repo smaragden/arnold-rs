@@ -31,6 +31,14 @@ impl AtString {
     pub fn hash(&self) -> usize {
         unsafe { AiAtStringHash(self.data) }
     }
+
+    pub fn to_str(&self) -> &str {
+        let slice = unsafe {
+            CStr::from_ptr(self.data)
+        };
+        slice.to_str().unwrap()
+
+    }
 }
 
 impl<'a> From<&'a str> for AtString {

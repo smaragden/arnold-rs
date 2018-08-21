@@ -6,14 +6,32 @@
 #![allow(non_snake_case)]
 
 pub use ai_bindings::AtHPoint;
-pub use ai_bindings::AtVector;
-pub use ai_bindings::AtVector2;
 
+use std::f32::{INFINITY, NAN};
 use std::ops::Sub;
 
-impl Sub for AtVector {
+#[doc(hidden)]
+pub fn clamp(val: f32, min: f32, max: f32) -> f32 {
+    if val < min {
+        min
+    } else if val > max {
+        max
+    } else {
+        val
+    }
+}
+
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct AtVector{
+    pub x: f32,
+    pub y: f32,
+    pub z: f32
+}
+
+impl<'a, 'b> Sub<&'b AtVector> for &'a AtVector {
     type Output = AtVector;
-    fn sub(self, other: AtVector) -> AtVector {
+    fn sub(self, other: &'b AtVector) -> AtVector {
         AtVector {
             x: self.x - other.x,
             y: self.y - other.y,
@@ -22,25 +40,45 @@ impl Sub for AtVector {
     }
 }
 
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct AtVector2{
+    pub x: f32,
+    pub y: f32,
+}
+
 pub trait Vector {
-    /// Vector Length: ||a||.
+    /// Vector Length: ||self||.
     fn length(&self) -> f32;
-    /// Dot product: <a, b>
+    /// Dot product: <self, b>
     fn dot(&self, b: &Self) -> f32;
+    /// Distance between two points: ||a-b||.
     fn dist(&self, b: &Self) -> f32;
-    //fn dist_plane(&self, p: &Self, n: &Self) -> f32;
-    //fn cross(&self, b: &Self) -> Self;
-    //fn normalize(&self) -> Self;
-    //fn lerp(&self, t: f32, hi: &Self) -> Self;
-    //fn clamp(&self, lo: f32, hi: f32) -> Self;
-    //fn min(&self) -> Self;
-    //fn max(&self) -> Self;
-    //fn abs(&self) -> Self;
-    //fn max_element(&self) -> f32;
-    //fn min_element(&self) -> f32;
+    /// Signed distance between point self and a plane defined by point p and normalized vector n.
+    fn dist_plane(&self, p: &Self, n: &Self) -> f32;
+    /// Cross product: self x b.
+    fn cross(&self, b: &Self) -> Self;
+    /// Normalize a vector: self / ||self||. 
+    fn normalize(&self) -> Self;
+    /// 3D vector linear interpolation (t=0 -> result=self, t=1 -> result=hi)
+    fn lerp(&self, t: f32, hi: &Self) -> Self;
+    /// Clamp each vector coordinate to the range [self,hi].
+    fn clamp(&self, lo: f32, hi: f32) -> Self;
+    /// Minimum of self and vector hi, component-wise.
+    fn min(&self, b: &Self) -> Self;
+    /// Maximum of self and vector b, component-wise.
+    fn max(&self, b: &Self) -> Self;
+    /// Absolute value of each component.
+    fn abs(&self) -> Self;
+    /// Element-wise max.
+    fn max_element(&self) -> f32;
+    /// Element-wise min.
+    fn min_element(&self) -> f32;
     //fn berp_xyz(&self, a: f32, b: f32, p1: &Self, p2: &Self) -> Self;
-    //fn is_finite(&self) -> bool;
-    //fn is_small(&self, epsilon: f32) -> bool;
+    /// Check whether a vector has all valid components (not NaN and not infinite)
+    fn is_finite(&self) -> bool;
+    /// Check for a zero vector, within a small tolerance: ||self|| < epsilon.
+    fn is_small(&self, epsilon: f32) -> bool;
     //fn rotate_to_frame(u: &Self, v: &Self, W: &Self); // Should mut this
     //fn berp_uv(a: f32, b: f32, u0: f32, v0: f32, u1: f32, v1: f32, u2: f32, v2: f32, u: *mut f32, v: *mut f32);
 }
@@ -57,70 +95,179 @@ impl Vector for AtVector {
     fn dist(&self, b: &Self) -> f32 {
         (b - self).length()
     }
+
+    fn dist_plane(&self, p: &Self, n: &Self) -> f32 {
+        self.dot(n) - p.dot(n)
+    }
+
+    fn cross(&self, b: &AtVector) -> Self {
+        Self {
+            x: self.y * b.z - self.z * b.y, 
+            y: self.z * b.x - self.x * b.z, 
+            z: self.x * b.y - self.y * b.x
+        }
+    }
+
+    fn normalize(&self) -> Self {
+        let mut temp = (self.x * self.x + self.y * self.y + self.z * self.z).sqrt();
+        if temp != 0.0{
+            temp = 1.0 / temp;
+        }
+
+        Self {
+            x: self.x * temp, 
+            y: self.y * temp, 
+            z: self.z * temp
+        }
+    }
+
+    fn lerp(&self, t: f32, hi: &Self) -> Self{
+        Self {
+            x: self.x * t + (hi.x*1.0-t), 
+            y: self.y * t + (hi.y*1.0-t),
+            z: self.z * t + (hi.z*1.0-t)
+        }
+    }
+
+    fn clamp(&self, lo: f32, hi: f32) -> Self{
+        Self {
+            x: clamp(self.x, lo, hi),
+            y: clamp(self.y, lo, hi),
+            z: clamp(self.z, lo, hi),
+        }
+    }
+
+    fn min(&self, b: &Self) -> Self{
+        Self {
+            x: self.x.min(b.x),
+            y: self.y.min(b.y),
+            z: self.z.min(b.z),
+        }
+    }
+
+    fn max(&self, b: &Self) -> Self{
+        Self {
+            x: self.x.max(b.x),
+            y: self.y.max(b.y),
+            z: self.z.max(b.z),
+        }
+    }
+
+    fn abs(&self) -> Self {
+        Self {
+            x: self.x.abs(),
+            y: self.y.abs(),
+            z: self.z.abs(),
+        }
+    }
+
+    fn max_element(&self) -> f32{
+        self.x.max(self.y).max(self.z)
+    }
+
+    fn min_element(&self) -> f32{
+        self.x.min(self.y).min(self.z)
+    }
+
+    fn is_finite(&self) -> bool {
+        !(self.x.abs() == INFINITY
+            || self.x.abs() == NAN
+            || self.y.abs() == INFINITY
+            || self.y.abs() == NAN
+            || self.z.abs() == INFINITY
+            || self.z.abs() == NAN)
+    }
+
+    fn is_small(&self, epsilon: f32) -> bool {
+        self.x.abs() < epsilon && self.y.abs() < epsilon && self.z.abs() < epsilon
+    }
 }
 
 /// Vector Length: ||a||.
-pub fn AiV3Length(a: &AtVector) -> f32 {
+pub fn AiV3Length<T: Vector>(a: &T) -> f32 {
     a.length()
 }
 
 /// Dot product: <a, b>
-pub fn AiV3Dot(a: &AtVector, b: &AtVector) -> f32 {
+pub fn AiV3Dot<T: Vector>(a: &T, b: &T) -> f32 {
     a.dot(b)
 }
 
+/// Distance between two points: ||a-b||.
+pub fn AiV3Dist<T: Vector + Sub>(a: &AtVector, b: &AtVector) -> f32 {
+    (b - a).length()
+}
+
+/// Squared distance between two points: ||a-b||^2.
+pub fn AiV3Dist2<T: Vector + Sub>(a: &AtVector, b: &AtVector) -> f32 {
+    (b - a).length().powf(2.0)
+}
+
+/// Signed distance between point x and a plane defined by point p and normalized vector n.
+pub fn AiV3DistPlane<T: Vector>(x: &AtVector, p: &AtVector, n: &AtVector) -> f32 {
+    x.dist_plane(p, n)
+}
+
+/// Cross product: a x b.
+pub fn AiV3Cross(a: &AtVector, b: &AtVector) -> AtVector {
+    a.cross(b)
+}
+
+/// Normalize a vector: a / ||a||. 
+pub fn AiV3Normalize(a: &AtVector) -> AtVector {
+    a.normalize()
+}
+
+/// 3D vector linear interpolation (t=0 -> result=lo, t=1 -> result=hi) 
+pub fn AiV3Lerp(t: f32, lo: &AtVector, hi: &AtVector) -> AtVector {
+    lo.lerp(t, hi)
+}
+
+/// Clamp each vector coordinate to the range [lo,hi]. 
+pub fn AiV3Clamp(a: &AtVector, lo: f32, hi: f32) -> AtVector {
+    a.clamp(lo, hi)
+}
+
+/// Minimum of two vectors, component-wise.
+pub fn AiV3Min(a: &AtVector, b: &AtVector) -> AtVector {
+    a.min(b)
+}
+
+/// Maximum of two vectors, component-wise. 
+pub fn AiV3Max(a: &AtVector, b: &AtVector) -> AtVector {
+    a.max(b)
+}
+
+/// Absolute value of each component. 
+pub fn ABS(a: &AtVector) -> AtVector {
+    a.abs()
+}
+
+/// Element-wise max. 
+pub fn AiMaxElement<T: Vector>(a: &T) -> f32 {
+    a.max_element()
+}
+
+/// Element-wise min. 
+pub fn AiMinElement<T: Vector>(a: &T) -> f32 {
+    a.min_element()
+}
+
+/// Check whether a vector has all valid components (not NaN and not infinite)
+pub fn AiV3IsFinite<T: Vector>(a: &T) -> bool {
+    a.is_finite()
+}
+
+/// Check for a zero vector, within a small tolerance: ||a|| < epsilon. 
+pub fn AiV3IsSmall<T: Vector>(a: &T, epsilon: f32) -> bool {
+    a.is_small(epsilon)
+}
+
+
 /*
-AI_DEVICE float 	AiV3Length (const AtVector &a)
- 	Vector Length: ||a||. 
- 
-AI_DEVICE constexpr float 	AiV3Dot (const AtVector &a, const AtVector &b)
- 	Dot product: <a, b> 
- 
-AI_DEVICE float 	AiV3Dist (const AtVector &a, const AtVector &b)
- 	Distance between two points: ||a-b||. 
- 
-AI_DEVICE constexpr float 	AiV3Dist2 (const AtVector &a, const AtVector &b)
- 	Squared distance between two points: ||a-b||^2. 
- 
-AI_DEVICE constexpr float 	AiV3DistPlane (const AtVector &x, const AtVector &p, const AtVector &n)
- 	Signed distance between point x and a plane defined by point p and normalized vector n. 
- 
-AI_DEVICE constexpr AtVector 	AiV3Cross (const AtVector &a, const AtVector &b)
- 	Cross product: a x b. 
- 
-AI_DEVICE AtVector 	AiV3Normalize (const AtVector &a)
- 	Normalize a vector: a / ||a||. 
- 
-AI_DEVICE constexpr AtVector 	AiV3Lerp (float t, const AtVector &lo, const AtVector &hi)
- 	3D vector linear interpolation (t=0 -> result=lo, t=1 -> result=hi) 
- 
-AI_DEVICE constexpr AtVector 	AiV3Clamp (const AtVector &in, float lo, float hi)
- 	Clamp each vector coordinate to the range [lo,hi]. 
- 
-AI_DEVICE constexpr AtVector 	AiV3Min (const AtVector &a, const AtVector &b)
- 	Minimum of two vectors, component-wise. 
- 
-AI_DEVICE constexpr AtVector 	AiV3Max (const AtVector &a, const AtVector &b)
- 	Maximum of two vectors, component-wise. 
- 
-AI_DEVICE AtVector 	ABS (const AtVector &a)
- 	Absolute value of each component. 
- 
-AI_DEVICE float 	AiMaxElement (const AtVector &a)
- 	Element-wise max. 
- 
-AI_DEVICE float 	AiMinElement (const AtVector &a)
- 	Element-wise min. 
- 
 AI_DEVICE AtVector 	AiBerpXYZ (float a, float b, const AtVector &p0, const AtVector &p1, const AtVector &p2)
  	Barycentric interpolation of a point inside a triangle. 
- 
-AI_API AI_DEVICE AI_PURE bool 	AiV3IsFinite (const AtVector &a)
- 	Check whether a vector has all valid components (not NaN and not infinite) 
- 
-AI_DEVICE bool 	AiV3IsSmall (const AtVector &a, float epsilon=AI_EPSILON)
- 	Check for a zero vector, within a small tolerance: ||a|| < epsilon. 
- 
+
 AI_DEVICE void 	AiV3RotateToFrame (AtVector &a, const AtVector &u, const AtVector &v, const AtVector &w)
  	Rotate vector a so that it aligns with frame {u,v,w}. 
  

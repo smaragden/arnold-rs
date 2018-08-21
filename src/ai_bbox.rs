@@ -7,23 +7,38 @@
 #![allow(non_snake_case)]
 
 use ai_bindings;
-//use ai_bindings::AtVector;
+use ai_vector::{AtVector, AiV3Min, AiV3Max};
 
-pub use ai_bindings::AtBBox;
+/// 3D axis-aligned bounding box (uses single-precision)
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct AtBBox {
+    pub min: AtVector,
+    pub max: AtVector,
+}
 
-/* TODO: Need to implement Vector first
 impl AtBBox {
-    pub fn from_vectors(p0: *const AtVector, p1: *const AtVector, p2: *const AtVector) -> Self {
+    pub fn from_vectors(p0: &AtVector, p1: &AtVector, p2: &AtVector) -> Self {
         let min = p0;
         let max = p0;
         let min = AiV3Min(min, p1);
         let max = AiV3Max(max, p1);
-        let min = AiV3Min(min, p2);
-        let max = AiV3Max(max, p2);
-        unsafe { AtBBox { min: min, max: max } }
+        let min = AiV3Min(&min, p2);
+        let max = AiV3Max(&max, p2);
+        AtBBox { min: min, max: max }
     }
 }
-*/
+
+/// 2D axis-aligned bounding box (uses integers)
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct AtBBox2 {
+    pub minx: ::std::os::raw::c_int,
+    pub miny: ::std::os::raw::c_int,
+    pub maxx: ::std::os::raw::c_int,
+    pub maxy: ::std::os::raw::c_int,
+}
+
 /// Compute the "union" of two bboxes.
 ///
 /// # Note

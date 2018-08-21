@@ -18,7 +18,7 @@
 |<ul><li>[ ] ai_device</li></ul>          |<ul><li>[ ] ai_ray</li></ul>               |<ul><li>[ ] ai_texture</li></ul>              |
 |<ul><li>[x] ai_dotass</li></ul>          |<ul><li>[ ] ai_render</li></ul>            |<ul><li>[ ] ai_unit_test</li></ul>            |
 |<ul><li>[ ] ~~ai_driver_utils~~</li></ul>|<ul><li>[ ] ai_threads</li></ul>           |<ul><li>[ ] ai_universe</li></ul>             |
-|<ul><li>[x] ai_drivers</li></ul>         |<ul><li>[ ] ai_sampler</li></ul>           |<ul><li>[ ] ai_vector</li></ul>               |
+|<ul><li>[x] ai_drivers</li></ul>         |<ul><li>[ ] ai_sampler</li></ul>           |<ul><li>[x] ai_vector</li></ul>               |
 |<ul><li>[ ] ai_enum</li></ul>            |<ul><li>[ ] ~~ai_shader_aovs~~</li></ul>   |<ul><li>[ ] ai_version</li></ul>              |
 |<ul><li>[ ] ~~ai_filters~~</li></ul>     |<ul><li>[ ] ~~ai_shader_bsdf~~</li></ul>   |<ul><li>[ ] ai_volume</li></ul>               |
 |<ul><li>[ ] ai_license</li></ul>         |<ul><li>[ ] ~~ai_shader_closure~~</li></ul>|                                              |

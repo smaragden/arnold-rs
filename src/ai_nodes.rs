@@ -19,6 +19,7 @@
 
 use ai_bindings;
 use ai_string::AtString;
+use ai_vector::{AtVector, AtVector2};
 
 use std::ffi::{CStr, CString};
 use std::os::raw::c_void;
@@ -591,10 +592,10 @@ pub fn AiNodeGetRGB(node: *const ai_bindings::AtNode, param: &str) -> ai_binding
 pub fn AiNodeGetRGBA(node: *const ai_bindings::AtNode, param: &str) -> ai_bindings::AtRGBA {
     unsafe { ai_bindings::AiNodeGetRGBA(node, AtString::from(param)) }
 }
-pub fn AiNodeGetVec(node: *const ai_bindings::AtNode, param: &str) -> ai_bindings::AtVector {
+pub fn AiNodeGetVec(node: *const ai_bindings::AtNode, param: &str) -> AtVector {
     unsafe { ai_bindings::AiNodeGetVec(node, AtString::from(param)) }
 }
-pub fn AiNodeGetVec2(node: *const ai_bindings::AtNode, param: &str) -> ai_bindings::AtVector2 {
+pub fn AiNodeGetVec2(node: *const ai_bindings::AtNode, param: &str) -> AtVector2 {
     unsafe { ai_bindings::AiNodeGetVec2(node, AtString::from(param)) }
 }
 pub fn AiNodeGetStr(node: *const ai_bindings::AtNode, param: &str) -> AtString {

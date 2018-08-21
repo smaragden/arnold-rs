@@ -46,7 +46,7 @@ fn main() {
         .whitelist_type("AtArray")
         .whitelist_function("AiArray.*")
         // ai_bbox
-        .whitelist_type("AtBBox")
+        .blacklist_type("AtBBox.*")
         .whitelist_function("AiBBox.*")
         // ai_color
         .whitelist_type("AtRGB.*")
@@ -155,7 +155,7 @@ fn main() {
         .whitelist_function("AiAOVIterator.+")
         .whitelist_var("AI_CACHE_.+")
         // ai_vector
-        .whitelist_type("AtVector.*")
+        .blacklist_type("AtVector.*") // reimplemented in ai_vector.rs
         .whitelist_type("AtHPoint.*")
         .whitelist_function("AiV[234].+")
         .whitelist_var("AI_[XYZ]")
