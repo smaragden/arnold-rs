@@ -9,6 +9,8 @@ pub use ai_bindings::AtRGB;
 pub use ai_bindings::AtRGBA;
 use std::f32::{INFINITY, NAN};
 
+use std::ops::{Add, Mul};
+
 #[doc(hidden)]
 pub fn clamp(val: f32, min: f32, max: f32) -> f32 {
     if val < min {
@@ -37,8 +39,42 @@ pub trait Color {
     fn to_gray(&self) -> f32;
     /// Check to see if an RGB color has any corrupted components (nan or infinite).
     fn is_finite(&self) -> bool;
-    //fn berp(&self, a: f32, b: f32, c1: Self, c2: Self) -> Self;
+    /// Barycentric interpolation of triangle vertex colors. 
+    fn berp(&self, a: f32, b: f32, c1: &Self, c2: &Self) -> Self;
     //fn heat_map(&self, ...)
+}
+
+impl Mul<AtRGB> for f32 {
+    type Output = AtRGB;
+    fn mul(self, other: AtRGB) -> AtRGB {
+        AtRGB{
+            r: self * other.r, 
+            g: self * other.g, 
+            b: self * other.b, 
+        }
+    }
+}
+
+impl<'a> Mul<&'a AtRGB> for f32 {
+    type Output = AtRGB;
+    fn mul(self, other: &'a AtRGB) -> AtRGB {
+        AtRGB{
+            r: self * other.r, 
+            g: self * other.g, 
+            b: self * other.b, 
+        }
+    }
+}
+
+impl Add for AtRGB {
+    type Output = AtRGB;
+    fn add(self, other: AtRGB) -> AtRGB {
+        AtRGB{
+            r: self.r + other.r, 
+            g: self.g + other.g, 
+            b: self.b + other.b, 
+        }
+    }
 }
 
 impl Color for AtRGB {
@@ -89,6 +125,47 @@ impl Color for AtRGB {
             || self.g.abs() == NAN
             || self.b.abs() == INFINITY
             || self.b.abs() == NAN)
+    }
+
+    fn berp(&self, a: f32, b: f32, c1: &Self, c2: &Self) -> Self {
+        let c : f32 = 1.0 - (a+b);
+        c*self + a*c1 + b*c2
+    }
+}
+
+impl Mul<AtRGBA> for f32 {
+    type Output = AtRGBA;
+    fn mul(self, other: AtRGBA) -> AtRGBA {
+        AtRGBA{
+            r: self * other.r, 
+            g: self * other.g, 
+            b: self * other.b, 
+            a: self * other.a, 
+        }
+    }
+}
+
+impl<'a> Mul<&'a AtRGBA> for f32 {
+    type Output = AtRGBA;
+    fn mul(self, other: &'a AtRGBA) -> AtRGBA {
+        AtRGBA{
+            r: self * other.r, 
+            g: self * other.g, 
+            b: self * other.b, 
+            a: self * other.a, 
+        }
+    }
+}
+
+impl Add for AtRGBA {
+    type Output = AtRGBA;
+    fn add(self, other: AtRGBA) -> AtRGBA {
+        AtRGBA{
+            r: self.r + other.r, 
+            g: self.g + other.g, 
+            b: self.b + other.b, 
+            a: self.a + other.a, 
+        }
     }
 }
 
@@ -146,6 +223,11 @@ impl Color for AtRGBA {
             || self.a.abs() == INFINITY
             || self.a.abs() == NAN)
     }
+
+    fn berp(&self, a: f32, b: f32, c1: &Self, c2: &Self) -> Self {
+        let c : f32 = 1.0 - (a+b);
+        c*self + a*c1 + b*c2
+    }
 }
 
 /// Clamp the RGB\[A\] color vector to the specified range.
@@ -192,6 +274,11 @@ pub fn AiColorToGrey<T: Color>(c: &T) -> f32 {
 /// Check to see if an RGB color has any corrupted components (nan or infinite).
 pub fn AiRGBIsFinite<T: Color>(c1: &T) -> bool {
     c1.is_finite()
+}
+
+/// Barycentric interpolation of triangle vertex colors.
+pub fn AiBerpRGB<T: Color>(a: f32, b: f32, c0: &T, c1: &T, c2: &T) -> T {
+    c0.berp(a, b, c1, c2)
 }
 
 /*

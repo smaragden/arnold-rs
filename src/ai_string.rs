@@ -1,6 +1,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
+#[allow(dead_code)]
 
 use ai_bindings::AiAtStringHash;
 use ai_bindings::AiAtStringLength;
@@ -9,7 +10,6 @@ pub use ai_bindings::AtString;
 
 use std::ffi::CStr;
 use std::fmt;
-#[allow(dead_code)]
 use std::ptr;
 use std::str;
 

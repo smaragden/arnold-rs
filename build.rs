@@ -46,13 +46,13 @@ fn main() {
         .whitelist_type("AtArray")
         .whitelist_function("AiArray.*")
         // ai_bbox
-        .blacklist_type("AtBBox.*")
+        .blacklist_type("AtBBox.*") // reimplemented in ai_bbox.rs
         .whitelist_function("AiBBox.*")
         // ai_color
         .whitelist_type("AtRGB.*")
         .whitelist_function("AiRGB.*")
         .whitelist_function("AiColor.*")
-        // ai_constants
+        // ai_constants, reimplemented in ai_constants.rs
         .blacklist_type("AI_PI")
         .blacklist_type("AI_PITIMES2")
         .blacklist_type("AI_PIOVER2")
@@ -94,8 +94,8 @@ fn main() {
         // ai_msg
         .whitelist_type("AtMsg")
         .whitelist_function("AiMsg.*")
-        .whitelist_var("AI_LOG_.+")
-        .whitelist_var("AI_SEVERITY_.+")
+        .blacklist_type("AI_LOG_.+")        // reimplemented in ai_msg.rs
+        .blacklist_type("AI_SEVERITY_.+")   // reimplemented in ai_msg.rs
         // ai_node_entry
         .whitelist_type("AtNodeEntry")
         .whitelist_function("AiNodeEntry.*")
@@ -154,12 +154,12 @@ fn main() {
         .whitelist_function("AiNodeEntryIterator.+")
         .whitelist_function("AiAOVIterator.+")
         .whitelist_var("AI_CACHE_.+")
-        // ai_vector
-        .blacklist_type("AtVector.*") // reimplemented in ai_vector.rs
-        .whitelist_type("AtHPoint.*")
-        .whitelist_function("AiV[234].+")
-        .whitelist_var("AI_[XYZ]")
-        .whitelist_var("AI_[VP][234]_.+")
+        // ai_vector, // reimplemented in ai_vector.rs
+        .blacklist_type("AtVector.*")
+        .blacklist_type("AtHPoint.*")
+        .blacklist_type("AiV[234].+")
+        .blacklist_type("AI_[XYZ]")
+        .blacklist_type("AI_[VP][234]_.+")
         // ai_version
         .whitelist_function("AiGetVersion.*")
         .whitelist_function("AiGetCompileOptions")

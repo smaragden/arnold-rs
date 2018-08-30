@@ -486,8 +486,9 @@ pub fn AiUserParamIteratorDestroy(iter: *mut ai_bindings::AtUserParamIterator) {
 /// }
 /// AiUserParamIteratorDestroy(iter);
 /// ```
-/// # Note
+/// ## Note
 /// If this is an instance, the iterator will NOT include user parameters that were declared in the reference node, even though AiNodeLookUpUserParameter() would find such user parameters in the instance.
+/// 
 /// # Parameters
 /// * `iter` - a user param iterator
 /// # Returns

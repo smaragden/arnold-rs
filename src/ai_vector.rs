@@ -5,10 +5,10 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
-pub use ai_bindings::AtHPoint;
+pub use ai_bindings;
 
 use std::f32::{INFINITY, NAN};
-use std::ops::Sub;
+use std::ops::{Add, Sub, Mul};
 
 #[doc(hidden)]
 pub fn clamp(val: f32, min: f32, max: f32) -> f32 {
@@ -29,6 +29,26 @@ pub struct AtVector{
     pub z: f32
 }
 
+//TODO: Implement Division Trait
+impl PartialEq for AtVector {
+    fn eq(&self, other: &AtVector) -> bool {
+            self.x == other.x
+        &&  self.y == other.y
+        &&  self.z == other.z
+    }
+}
+
+impl Add for AtVector {
+    type Output = AtVector;
+    fn add(self, other: AtVector) -> AtVector {
+        AtVector{
+            x: self.x + other.x, 
+            y: self.y + other.y, 
+            z: self.z + other.z, 
+        }
+    }
+}
+
 impl<'a, 'b> Sub<&'b AtVector> for &'a AtVector {
     type Output = AtVector;
     fn sub(self, other: &'b AtVector) -> AtVector {
@@ -40,11 +60,78 @@ impl<'a, 'b> Sub<&'b AtVector> for &'a AtVector {
     }
 }
 
+impl Mul for AtVector {
+    type Output = AtVector;
+    fn mul(self, other: AtVector) -> AtVector {
+        AtVector{
+            x: self.x * other.x, 
+            y: self.y * other.y, 
+            z: self.z * other.z, 
+        }
+    }
+}
+
+impl<'a> Mul for &'a AtVector {
+    type Output = AtVector;
+    fn mul(self, other: &'a AtVector) -> AtVector {
+        AtVector{
+            x: self.x * other.x, 
+            y: self.y * other.y, 
+            z: self.z * other.z, 
+        }
+    }
+}
+
+impl<'a> Mul<&'a AtVector> for f32 {
+    type Output = AtVector;
+    fn mul(self, other: &'a AtVector) -> AtVector {
+        AtVector{
+            x: self * other.x, 
+            y: self * other.y, 
+            z: self * other.z, 
+        }
+    }
+}
+
+impl<'a> Mul<f32> for &'a AtVector {
+    type Output = AtVector;
+    fn mul(self, other: f32) -> AtVector {
+        AtVector{
+            x: self.x * other, 
+            y: self.y * other, 
+            z: self.z * other, 
+        }
+    }
+}
+
+
+impl<'a> Mul<&'a mut AtVector> for f32 {
+    type Output = AtVector;
+    fn mul(self, other: &'a mut AtVector) -> AtVector {
+        AtVector{
+            x: self * other.x, 
+            y: self * other.y, 
+            z: self * other.z, 
+        }
+    }
+}
+
+
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct AtVector2{
     pub x: f32,
     pub y: f32,
+}
+
+/// Homogeneous point
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct AtHPoint {
+    pub x: f32,
+    pub y: f32,
+    pub z: f32,
+    pub w: f32,
 }
 
 pub trait Vector {
@@ -74,13 +161,14 @@ pub trait Vector {
     fn max_element(&self) -> f32;
     /// Element-wise min.
     fn min_element(&self) -> f32;
-    //fn berp_xyz(&self, a: f32, b: f32, p1: &Self, p2: &Self) -> Self;
+    /// Barycentric interpolation of a point inside a triangle.
+    fn berp_xyz(&self, a: f32, b: f32, p1: &Self, p2: &Self) -> Self;
     /// Check whether a vector has all valid components (not NaN and not infinite)
     fn is_finite(&self) -> bool;
     /// Check for a zero vector, within a small tolerance: ||self|| < epsilon.
     fn is_small(&self, epsilon: f32) -> bool;
-    //fn rotate_to_frame(u: &Self, v: &Self, W: &Self); // Should mut this
-    //fn berp_uv(a: f32, b: f32, u0: f32, v0: f32, u1: f32, v1: f32, u2: f32, v2: f32, u: *mut f32, v: *mut f32);
+    /// Rotate vector a so that it aligns with frame {u,v,w}.
+    fn rotate_to_frame(&mut self, u: &Self, v: &Self, v: &Self); // Should mut self
 }
 
 impl Vector for AtVector {
@@ -169,6 +257,11 @@ impl Vector for AtVector {
         self.x.min(self.y).min(self.z)
     }
 
+    fn berp_xyz(&self, a: f32, b: f32, p1: &Self, p2: &Self) -> Self{
+        let c: f32 = 1.0 - (a + b);
+        c*self + a*p1 + b*p2
+    }
+
     fn is_finite(&self) -> bool {
         !(self.x.abs() == INFINITY
             || self.x.abs() == NAN
@@ -180,6 +273,13 @@ impl Vector for AtVector {
 
     fn is_small(&self, epsilon: f32) -> bool {
         self.x.abs() < epsilon && self.y.abs() < epsilon && self.z.abs() < epsilon
+    }
+
+    fn rotate_to_frame(&mut self, u: &Self, v: &Self, w: &Self){
+        let tmp = u * self.x + v * self.y + w * self.z;
+        self.x = tmp.x;
+        self.y = tmp.y;
+        self.z = tmp.z;
     }
 }
 
@@ -263,14 +363,119 @@ pub fn AiV3IsSmall<T: Vector>(a: &T, epsilon: f32) -> bool {
     a.is_small(epsilon)
 }
 
+/// Barycentric interpolation of a point inside a triangle. 
+pub fn AiBerpXYZ<T: Vector>(a: f32, b: f32, c0: &T, c1: &T, c2: &T) -> T {
+    c0.berp_xyz(a, b, c1, c2)
+}
 
-/*
-AI_DEVICE AtVector 	AiBerpXYZ (float a, float b, const AtVector &p0, const AtVector &p1, const AtVector &p2)
- 	Barycentric interpolation of a point inside a triangle. 
+/// Rotate vector a so that it aligns with frame {u,v,w}. 
+pub fn AiV3RotateToFrame<T: Vector>(a: &mut T, u: &T, v: &T, w: &T) {
+    a.rotate_to_frame(u, v, w);
+}
 
-AI_DEVICE void 	AiV3RotateToFrame (AtVector &a, const AtVector &u, const AtVector &v, const AtVector &w)
- 	Rotate vector a so that it aligns with frame {u,v,w}. 
- 
-AI_DEVICE void 	AiBerpUV (float a, float b, float u0, float v0, float u1, float v1, float u2, float v2, float *u, float *v)
- 	Barycentric interpolation of UV coordinates inside a 3D triangle. 
-*/
+/// Barycentric interpolation of UV coordinates inside a 3D triangle.
+pub fn AiBerpUV(a: f32, b: f32, u0: f32, v0: f32, u1: f32, v1: f32, u2: f32, v2: f32, u: &mut f32, v: &mut f32) {
+    let c : f32 = 1.0 - (a + b);
+    *u = c * u0 + a * u1 + b * u2;
+    *v = c * v0 + a * v1 + b * v2;
+}
+
+/// Build an orthonormal basis aligned with vector N (Frisvad's method).
+/// 
+/// This is Frisvad's method of building a local reference frame (U,V,W), where W = N. This method is discontinuous at the Z = 0 plane.
+/// 
+/// # Parameters
+///  * `[out] U` - normalized U basis vector
+///  * `[out] V` - normalized V basis vector
+///  * `N` - normalized vector that will serve as our W basis vector (usually this is a surface normal)
+pub fn AiV3BuildLocalFrame(U: &mut AtVector, V: &mut AtVector, N: &AtVector){
+    unsafe{ ai_bindings::AiV3BuildLocalFrame(U, V, N) }
+}
+
+/// Build an orthonormal basis aligned with vector N (polar method).
+/// 
+/// Builds local reference frame (U,V,W), where W = N. Uses the parametric tangent vectors in polar coordinates. This is continuous all across the sphere but at the poles.
+/// 
+/// # Parameters
+///  * `[out] U` - normalized U basis vector
+///  * `[out] V` - normalized V basis vector
+///  * `N` - normalized vector that will serve as our W basis vector (usually this is a surface normal)
+pub fn AiV3BuildLocalFramePolar(U: &mut AtVector, V: &mut AtVector, N: &AtVector){
+    unsafe{ ai_bindings::AiV3BuildLocalFramePolar(U, V, N) }
+}
+
+/// Create a 4D point: pout = (v.x, v.y, v.z, 1) 
+pub fn AiV4CreatePoint (v: &AtVector) -> AtHPoint {
+    AtHPoint{
+        x: v.x,
+        y: v.y,
+        z: v.z,
+        w: 1.0
+    }
+}
+
+/// Create a 4D vector: vout = (v.x, v.y, v.z, 0)
+pub fn AiV4CreateVector (v: &AtVector) -> AtHPoint {
+    AtHPoint{
+        x: v.x,
+        y: v.y,
+        z: v.z,
+        w: 0.0
+    }
+}
+
+/// Add two vectors: vout = v1 + v2. 
+pub fn AiV4Add(vout: &mut AtHPoint, v1: &AtHPoint, v2: &AtHPoint){
+    vout.x = v1.x+v2.x;
+    vout.y = v1.y+v2.y;
+    vout.z = v1.z+v2.z;
+}
+
+/// Substract two vectors: vout = v1 - v2. 
+pub fn AiV4Sub(vout: &mut AtHPoint, v1: &AtHPoint, v2: &AtHPoint){
+    vout.x = v1.x-v2.x;
+    vout.y = v1.y-v2.y;
+    vout.z = v1.z-v2.z;
+}
+
+/// Scale a vector by a constant: vout = vin * k. 
+pub fn AiV4Scale(vout: &mut AtHPoint, vin: &AtHPoint, k: f32){
+    vout.x = vin.x*k;
+    vout.y = vin.y*k;
+    vout.z = vin.z*k;
+    vout.w = vin.w*k;
+}
+
+/// Negate a vector: vout = -vin. 
+pub fn AiV4Neg(vout: &mut AtHPoint, vin: &AtHPoint){
+    vout.x = -vin.x;
+    vout.y = -vin.y;
+    vout.z = -vin.z;
+    vout.w = -vin.w;
+}
+
+/// Project a homogeneous vector back into 3d: vout = vin.w != 0 ? vin * (1 / vin.w) : (0,0,0) 
+pub fn AiV4Project(vout: &mut AtVector, vin: &AtHPoint){
+    let mut tmp = AI_V3_ZERO;
+    if vin.w != 0.0 {
+        tmp = AtVector{x: vin.x / vin.w, y: vin.y / vin.w, z: vin.z / vin.w};
+    }
+    vout.x = tmp.x;
+    vout.y = tmp.y;
+    vout.z = tmp.z;
+    
+}
+
+
+pub const AI_P3_ZERO  :AtVector = AtVector{x: 0.0, y: 0.0, z: 0.0};
+pub const AI_V3_ZERO  :AtVector = AtVector{x: 0.0, y: 0.0, z: 0.0};
+pub const AI_V3_HALF  :AtVector = AtVector{x: 0.5, y: 0.5, z: 0.5};
+pub const AI_V3_ONE   :AtVector = AtVector{x: 1.0, y: 1.0, z: 1.0};
+pub const AI_V3_X     :AtVector = AtVector{x: 1.0, y: 0.0, z: 0.0};
+pub const AI_V3_Y     :AtVector = AtVector{x: 0.0, y: 1.0, z: 0.0};
+pub const AI_V3_Z     :AtVector = AtVector{x: 0.0, y: 0.0, z: 1.0};
+pub const AI_V3_NEGX  :AtVector = AtVector{x:-1.0, y: 0.0, z: 0.0};
+pub const AI_V3_NEGY  :AtVector = AtVector{x: 0.0, y: 1.0, z: 0.0};
+pub const AI_V3_NEGZ  :AtVector = AtVector{x: 0.0, y: 0.0, z: 1.0};
+pub const AI_P2_ZERO  :AtVector2 = AtVector2{x: 0.0, y: 0.0};
+pub const AI_P2_ONE   :AtVector2 = AtVector2{x: 1.0, y: 1.0};
