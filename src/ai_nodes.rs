@@ -10,8 +10,8 @@
 //!
 //! Two of the important data-structures in this object-oriented-like system are:
 //!
-//! **AtNodeEntry** – this contains the "description" of a particular node type ("polymesh", "persp_camera", etc.)  
-//! **AtString** – this contains the "instantiation" of a particular node type
+//! [AtNodeEntry](../ai_node_entry/index.html) – this contains the "description" of a particular node type ("polymesh", "persp_camera", etc.)  
+//! [AtString](../ai_string/index.html) – this contains the "instantiation" of a particular node type
 
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]

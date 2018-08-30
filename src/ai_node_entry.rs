@@ -1,19 +1,54 @@
+//! AtParamEntry API
+//! 
+//! For a discussion of Arnold's object-oriented system of pluggable nodes, please refer to [AtNode API](../ai_nodes/index.html).
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
 use ai_bindings;
-use ai_bindings::{
+pub use ai_bindings::{
     AtNodeEntry, 
     AtParamEntry, 
     AtParamIterator,
     AtMetaDataIterator,
-    AtNodeMethods
+    AtNodeMethods,
+    AtMetaDataEntry
 };
 use ai_bindings::AtString;
 
 use std::ffi::{CStr, CString};
-use std::{ptr, str};
+use std::str;
+
+// Nodes
+/// Undefined type. 
+pub const AI_NODE_UNDEFINED: u32 = 0;
+/// Options node (following the "singleton" pattern, there is only one options node) 
+pub const AI_NODE_OPTIONS: u32 = 1;
+/// Camera nodes (persp_camera, fisheye_camera, etc) 
+pub const AI_NODE_CAMERA: u32 = 2;
+/// Light source nodes (spot_light, etc) 
+pub const AI_NODE_LIGHT: u32 = 4;
+/// Geometry nodes (sphere, polymesh, etc) 
+pub const AI_NODE_SHAPE: u32 = 8;
+/// Shader nodes (lambert, etc) 
+pub const AI_NODE_SHADER: u32 = 16;
+/// EXPERIMENTAL: override nodes support "delayed parameter overrides" for procedural nodes. 
+pub const AI_NODE_OVERRIDE: u32 = 32;
+/// Output driver nodes (driver_tiff, etc) 
+pub const AI_NODE_DRIVER: u32 = 64;
+/// Pixel sample filter nodes (box_filter, etc. 
+pub const AI_NODE_FILTER: u32 = 128;
+/// Color manager nodes (Syncolor, OCIO, etc) 
+pub const AI_NODE_COLOR_MANAGER: u32 = 2048;
+/// Operator plug-in nodes. 
+pub const AI_NODE_OPERATOR: u32 = 4096;
+/// Bitmask including all node types, used by [AiASSWrite()](../ai_dotass/fn.AiASSWrite.html)
+pub const AI_NODE_ALL: u32 = 65535;
+
+// Shapes
+pub const AI_NODE_SHAPE_PROCEDURAL: u32 = 256;
+pub const AI_NODE_SHAPE_VOLUME: u32 = 512;
+pub const AI_NODE_SHAPE_IMPLICIT: u32 = 1024;
 
 /// Look up a node entry from a name string.
 /// 
@@ -256,41 +291,51 @@ pub fn AiParamIteratorDestroy(iter: *mut AtParamIterator){
 pub fn AiParamIteratorGetNext(iter: *mut AtParamIterator) -> *const AtParamEntry {
     unsafe {ai_bindings::AiParamIteratorGetNext(iter) }
 }
-/*
 
-AI_API bool AiParamIteratorFinished	(	const AtParamIterator * 	iter	)	
-Returns true if there are no more parameters to iterate over.
+/// Returns true if there are no more parameters to iterate over.
+/// 
+/// # Parameters
+/// * `iter` - a param iterator
+/// # Returns
+/// true if the param iterator has moved past the last parameter
+pub fn AiParamIteratorFinished(iter: *const AtParamIterator) -> bool {
+    unsafe {ai_bindings::AiParamIteratorFinished(iter) }
+}
 
-Parameters
-iter	a param iterator
-Returns
-true if the param iterator has moved past the last parameter
-AI_API void AiMetaDataIteratorDestroy	(	AtMetaDataIterator * 	iter	)	
-Destroys a metadata iterator when it is no longer needed.
+/// Destroys a metadata iterator when it is no longer needed.
+/// 
+/// # Parameters
+/// * `iter` - metadata iterator that will be deallocated
+pub fn AiMetaDataIteratorDestroy(iter: *mut AtMetaDataIterator){
+    unsafe {ai_bindings::AiMetaDataIteratorDestroy(iter) }
+}
 
-Parameters
-iter	metadata iterator that will be deallocated
-AI_API const AtMetaDataEntry* AiMetaDataIteratorGetNext	(	AtMetaDataIterator * 	iter	)	
-Returns current metadata entry and points metadata iterator to the next one.
+/// Returns current metadata entry and points metadata iterator to the next one.
+/// 
+/// This function is designed to be used inside a loop, as illustrated by the following example, which prints all the metadata of a given AtNodeEntry:
+/// ```
+///     AtMetaDataIterator *iter = AiNodeEntryGetMetaDataIterator(nentry);
+///     while (!AiMetaDataIteratorFinished(iter))
+///     {
+///        const AtMetaDataEntry *entry = AiMetaDataIteratorGetNext(iter);
+///        printf("%s\n", entry->name);
+///     }
+///     AiMetaDataIteratorDestroy(iter);
+/// ```
+/// # Parameters
+/// * `iter` - a metadata iterator
+/// # Returns
+/// the current metadata entry pointed by the iterator, or NULL if there is no more metadata to iterate over
+pub fn AiMetaDataIteratorGetNext(iter: *mut AtMetaDataIterator) -> *const AtMetaDataEntry {
+    unsafe {ai_bindings::AiMetaDataIteratorGetNext(iter) }
+}
 
-This function is designed to be used inside a loop, as illustrated by the following example, which prints all the metadata of a given AtNodeEntry:
-
-    1 AtMetaDataIterator *iter = AiNodeEntryGetMetaDataIterator(nentry);
-    2 while (!AiMetaDataIteratorFinished(iter))
-    3 {
-    4    const AtMetaDataEntry *entry = AiMetaDataIteratorGetNext(iter);
-    5    printf("%s\n", entry->name);
-    6 }
-    7 AiMetaDataIteratorDestroy(iter);
-Parameters
-iter	a metadata iterator
-Returns
-the current metadata entry pointed by the iterator, or NULL if there is no more metadata to iterate over
-AI_API bool AiMetaDataIteratorFinished	(	const AtMetaDataIterator * 	iter	)	
-Returns true if there is no more metadata to iterate over.
-
-Parameters
-iter	a metadata iterator
-Returns
-true if the metadata iterator has moved past the last entry
-*/
+/// Returns true if there is no more metadata to iterate over.
+/// 
+/// # Parameters
+/// * `iter` - a metadata iterator
+/// # Returns
+/// true if the metadata iterator has moved past the last entry
+pub fn AiMetaDataIteratorFinished(iter: *const AtMetaDataIterator) -> bool {
+    unsafe {ai_bindings::AiMetaDataIteratorFinished(iter) }
+}
