@@ -2,6 +2,9 @@
 name = "arnold-rs"
 version = "0.1.0"
 authors = ["fredrik.brannbacka <fredrik.brannbacka@gmail.com>"]
+description = "Rust bindings for the Arnold raytracing API"
+repository = "https://github.com/smaragden/arnold-rs"
+license = "MIT"
 #build = "build.rs"
 
 [build-dependencies]

@@ -1,4 +1,4 @@
-# Rust bindings for the Arnold rendering API
+# Rust bindings for the Arnold raytracing API
 
 ## Modules Completion
 |                                         |                                           |                                              |
