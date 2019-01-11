@@ -388,9 +388,11 @@ pub fn AiBerpUV(a: f32, b: f32, u0: f32, v0: f32, u1: f32, v1: f32, u2: f32, v2:
 ///  * `[out] U` - normalized U basis vector
 ///  * `[out] V` - normalized V basis vector
 ///  * `N` - normalized vector that will serve as our W basis vector (usually this is a surface normal)
+/*
 pub fn AiV3BuildLocalFrame(U: &mut AtVector, V: &mut AtVector, N: &AtVector){
     unsafe{ ai_bindings::AiV3BuildLocalFrame(U, V, N) }
 }
+*/
 
 /// Build an orthonormal basis aligned with vector N (polar method).
 /// 
@@ -400,9 +402,11 @@ pub fn AiV3BuildLocalFrame(U: &mut AtVector, V: &mut AtVector, N: &AtVector){
 ///  * `[out] U` - normalized U basis vector
 ///  * `[out] V` - normalized V basis vector
 ///  * `N` - normalized vector that will serve as our W basis vector (usually this is a surface normal)
+/*
 pub fn AiV3BuildLocalFramePolar(U: &mut AtVector, V: &mut AtVector, N: &AtVector){
     unsafe{ ai_bindings::AiV3BuildLocalFramePolar(U, V, N) }
 }
+*/
 
 /// Create a 4D point: pout = (v.x, v.y, v.z, 1) 
 pub fn AiV4CreatePoint (v: &AtVector) -> AtHPoint {
